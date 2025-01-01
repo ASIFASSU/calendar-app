@@ -43,7 +43,7 @@ function App() {
     <CommunicationProvider>
       <div className="app-container">
         <nav className="main-navigation">
-          <div className="logo">Engage Calendar</div>
+          <div className="logo">Calendar App</div>
           <ul className="nav-links">
             {!isAuthenticated ? (
               <>

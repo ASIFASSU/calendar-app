@@ -74,6 +74,24 @@ const SAMPLE_COMPANIES = [
     lastCommunicationDate: "2023-09-15",
     lastCommunicationSequence: 3,
   },
+  {
+    id: uuidv4(),
+    name: "Future Tech",
+    emails: ["info@futuretech.com"],
+    phoneNumbers: ["+4455667788"],
+    communicationPeriodicity: 10,
+    lastCommunicationDate: "2023-09-10",
+    lastCommunicationSequence: 4,
+  },
+  {
+    id: uuidv4(),
+    name: "NextGen Solutions",
+    emails: ["contact@nextgen.com"],
+    phoneNumbers: ["+9988776655"],
+    communicationPeriodicity: 5,
+    lastCommunicationDate: "2023-09-05",
+    lastCommunicationSequence: 5,
+  },
 ];
 
 // Sample Communications
@@ -101,6 +119,22 @@ const SAMPLE_COMMUNICATIONS = [
     timestamp: "2023-09-15",
     notes: "Discussed upcoming project details.",
     sequence: 3,
+  },
+  {
+    id: uuidv4(),
+    companyId: SAMPLE_COMPANIES[3].id,
+    type: "LinkedIn Message",
+    timestamp: "2023-09-10",
+    notes: "Sent a LinkedIn message for collaboration.",
+    sequence: 4,
+  },
+  {
+    id: uuidv4(),
+    companyId: SAMPLE_COMPANIES[4].id,
+    type: "Email",
+    timestamp: "2023-09-05",
+    notes: "Sent an email for project updates.",
+    sequence: 5,
   },
 ];
 
@@ -303,6 +337,17 @@ export function CommunicationProvider({ children }) {
     });
   }, [state.companies]);
 
+  const getDueTodayCommunications = useCallback(() => {
+    const today = new Date();
+    return state.companies.filter((company) => {
+      if (!company.lastCommunicationDate) return false;
+      const daysSinceLastCom =
+        (today.getTime() - new Date(company.lastCommunicationDate).getTime()) /
+        (1000 * 60 * 60 * 24);
+      return daysSinceLastCom === (company.communicationPeriodicity || 14);
+    });
+  }, [state.companies]);
+
   const getAllCommunicationsForCompany = useCallback(
     (companyId) => {
       return state.communications
@@ -367,6 +412,7 @@ export function CommunicationProvider({ children }) {
         deleteCommunicationMethod,
         getCompanyById,
         getOverdueCommunications,
+        getDueTodayCommunications,
       }}
     >
       {children}
